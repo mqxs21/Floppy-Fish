@@ -1,0 +1,164 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class FloppyFishController : MonoBehaviour
+{
+    [Header("Rotation on Ground")]
+    public float landTorque = 30f;        // Torque per second when holding left/right on the ground
+    public float airTorque = 10f;         // Torque per second when holding left/right in air
+    public float maxAngularSpeed = 300f;  // Limit how fast fish spins
+
+    [Header("Flop Jump")]
+    public float flopForce = 12f;         // Base upward flop impulse
+    public float diagonalMultiplier = 1.2f; // Extra multiplier if left/right is held
+    public float flopCooldown = 0.5f;     // Time between flops
+    private float lastFlopTime = -999f;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+
+    [Header("Movement Limits")]
+    public float maxHorizontalSpeed = 5f; // Limit horizontal velocity
+
+    private Rigidbody2D rb;
+    private bool isGrounded = false;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+
+        // A bit of drag can help keep the fish from sliding around too much
+        // but if you want friction for spinning, you might use a low-friction Physics Material instead.
+        rb.angularDamping = 0.2f;
+        rb.linearDamping = 0.2f;
+    }
+
+    void Update()
+    {
+        // **Jump (Flop) Input**: only allowed if on ground & cooldown passed
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && (Time.time - lastFlopTime >= flopCooldown))
+        {
+            DoFlop();
+              rb.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+        }
+        bool leftHeld = Input.GetKey(KeyCode.A);
+        bool rightHeld = Input.GetKey(KeyCode.D);
+        bool anyHeld = leftHeld || rightHeld;
+        if (Input.GetKeyDown(KeyCode.Space)   && anyHeld)
+        {
+            Debug.Log("Jumping with left/right held");
+          
+        }
+    }
+
+    void FixedUpdate()
+    {
+        CheckGrounded();
+
+        // 1) Limit how fast we can spin
+        rb.angularVelocity = Mathf.Clamp(rb.angularVelocity, -maxAngularSpeed, maxAngularSpeed);
+
+        // 2) Rotate in place when holding left/right
+        bool leftHeld = Input.GetKey(KeyCode.A);
+        bool rightHeld = Input.GetKey(KeyCode.D);
+
+        if (leftHeld)
+        {
+            float torquePerFrame = (isGrounded ? landTorque : airTorque) * Time.fixedDeltaTime;
+            // Positive torque => rotate counterclockwise
+            rb.AddTorque(torquePerFrame, ForceMode2D.Force);
+        }
+        if (rightHeld)
+        {
+            float torquePerFrame = (isGrounded ? landTorque : airTorque) * Time.fixedDeltaTime;
+            // Negative torque => rotate clockwise
+            rb.AddTorque(-torquePerFrame, ForceMode2D.Force);
+        }
+
+        // 3) Clamp horizontal speed so we don’t slide too far
+        if (Mathf.Abs(rb.linearVelocity.x) > maxHorizontalSpeed)
+        {
+            rb.linearVelocity = new Vector2(
+                Mathf.Sign(rb.linearVelocity.x) * maxHorizontalSpeed,
+                rb.linearVelocity.y
+            );
+        }
+    }
+
+    private void DoFlop()
+    {
+        // Base jump is straight up
+        Vector2 jumpDir = Vector2.up;
+        bool leftHeld = Input.GetKey(KeyCode.A);
+        bool rightHeld = Input.GetKey(KeyCode.D);
+
+        // If left or right is held, we add sideways to the jump
+        if (leftHeld)  jumpDir += Vector2.left * 0.5f;
+        if (rightHeld) jumpDir += Vector2.right * 0.5f;
+
+        jumpDir.Normalize();
+
+        // Calculate flop strength
+        float baseFlop = flopForce;
+
+        // If moving diagonally, multiply for a bigger push
+        if (leftHeld || rightHeld)
+            baseFlop *= diagonalMultiplier;
+
+        // Apply the impulse
+        rb.AddForce(jumpDir * baseFlop, ForceMode2D.Impulse);
+
+        // (Optional) A little random torque to keep it feeling “fishy”
+        float randomTorque = Random.Range(-20f, 20f);
+        rb.AddTorque(randomTorque, ForceMode2D.Impulse);
+
+        lastFlopTime = Time.time;
+    }
+
+    [Header("Ground Check (Capsule)")]
+public float capsuleWidth = 0.3f;
+public float capsuleHeight = 0.5f;
+
+private void CheckGrounded()
+{
+    // CapsuleDirection2D.Vertical means it's taller than wide (like a vertical "pill")
+    Collider2D hit = Physics2D.OverlapCapsule(
+        groundCheck.position,
+        new Vector2(capsuleWidth, capsuleHeight),
+        CapsuleDirection2D.Vertical,
+        0f,               // rotation
+        groundLayer
+    );
+
+    isGrounded = (hit != null);
+}
+
+
+    void OnDrawGizmosSelected()
+{
+    if (groundCheck == null) return;
+
+    Gizmos.color = isGrounded ? Color.green : Color.red;
+
+    // Because there's no built-in Gizmos.DrawCapsule in 2D, let's just draw an approximate box & circles:
+    // We'll treat "capsuleWidth" as the narrow dimension, "capsuleHeight" as the total "capsule" height.
+
+    Vector2 center = groundCheck.position;
+    float halfHeight = capsuleHeight * 0.5f;
+    float radius = capsuleWidth * 0.5f;
+
+    // Draw center rectangle
+    Vector2 rectTop = center + Vector2.up * (halfHeight - radius);
+    Vector2 rectBottom = center + Vector2.down * (halfHeight - radius);
+    Vector2 rectSize = new Vector2(capsuleWidth, capsuleHeight - (2f * radius));
+    Gizmos.DrawWireCube(center, rectSize);
+
+    // Draw top circle
+    Gizmos.DrawWireSphere(rectTop, radius);
+    // Draw bottom circle
+    Gizmos.DrawWireSphere(rectBottom, radius);
+}
+
+}
