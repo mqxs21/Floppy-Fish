@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 16356981dc365314e94f0b8163285b56
+guid: cd2dab8bde9ad4edfaa48cd327c99f9a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6449445296501063061
-    second: toxicGas_0
+      213: 5188173852858522736
+    second: ground2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: toxicGas_0
+      name: ground2_0
       rect:
         serializedVersion: 2
-        x: 33
-        y: 47
-        width: 310
-        height: 313
+        x: 0
+        y: 0
+        width: 4000
+        height: 611
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b628db76ca7fe76a0800000000000000
-      internalID: -6449445296501063061
+      spriteID: 07c1a9c81a8100840800000000000000
+      internalID: 5188173852858522736
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      toxicGas_0: -6449445296501063061
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
