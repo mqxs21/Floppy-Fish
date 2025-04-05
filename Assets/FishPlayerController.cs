@@ -35,6 +35,11 @@ private Vector3 targetScale = Vector3.one;
 
     void OnCollisionEnter2D(Collision2D collision)
 {
+    if (collision.gameObject.tag == "Enemy")
+    {
+        Debug.Log("Player hit!");
+    }
+    //--------------------------------
     float impact = collision.relativeVelocity.magnitude;
 
     if (impact > 1f) // Only bounce on noticeable hits
