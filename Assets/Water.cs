@@ -7,7 +7,7 @@ public class Water : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerStateManager.currentPlayerState = PlayerStateManager.PlayerState.Water;
-            //Debug.Log("Player is in water");
+            Debug.Log("Player is in water");
         }
     }
     void OnTriggerExit2D(Collider2D collision)
@@ -15,7 +15,7 @@ public class Water : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerStateManager.currentPlayerState = PlayerStateManager.PlayerState.Land;
-            //Debug.Log("Player is out of water");
+            Debug.Log("Player is out of water");
         }
     }
 }

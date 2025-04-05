@@ -72,8 +72,20 @@ private Vector3 targetScale = Vector3.one;
 
     void Update()
     {
-        // **Jump (Flop) Input**: only allowed if on ground & cooldown passed
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && (Time.time - lastFlopTime >= flopCooldown))
+        if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rb.AddForce(Vector2.up * 2, ForceMode2D.Impulse);
+            }else if (Input.GetKey(KeyCode.A))
+            {
+                rb.AddForce(Vector2.left * 2, ForceMode2D.Impulse);
+            }else if (Input.GetKey(KeyCode.D))
+            {
+                rb.AddForce(Vector2.right * 2, ForceMode2D.Impulse);
+            }
+        }else{
+              if (Input.GetKeyDown(KeyCode.Space) && isGrounded && (Time.time - lastFlopTime >= flopCooldown))
         {
             DoFlop();
               rb.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
@@ -86,6 +98,9 @@ private Vector3 targetScale = Vector3.one;
             Debug.Log("Jumping with left/right held");
           
         }
+        }
+        // **Jump (Flop) Input**: only allowed if on ground & cooldown passed
+      
         // Smoothly return fish model to normal scale
 if (fishModelPrefab != null)
 {
