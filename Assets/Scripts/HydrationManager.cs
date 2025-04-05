@@ -5,19 +5,18 @@ public class HydrationManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public static float maxHydration = 100;
-    public static float currentHydration = 5;
+    public static float currentHydration = 100;
 
     public UnityEngine.UI.Image HydrationBar;
     void Start()
     {
-        
+        currentHydration = maxHydration;
     }
 
     // Update is called once per frame
     void Update()
     {
         HydrationBar.fillAmount = Mathf.Lerp(HydrationBar.fillAmount,(currentHydration / maxHydration), Time.deltaTime * 5);
-
        // Debug.Log("Hydration: " + HydrationManager.currentHydration);
         
     }

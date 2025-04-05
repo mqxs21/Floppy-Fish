@@ -24,15 +24,45 @@ public class FloppyFishController : MonoBehaviour
 
     private Rigidbody2D rb;
     private bool isGrounded = false;
+    [Header("Bounce Stretch Settings")]
+public Transform fishModelPrefab;  // Drag your visual model here in Inspector
+public Vector2 xScaleRange = new Vector2(0.8f, 1.2f);
+public Vector2 yScaleRange = new Vector2(0.8f, 1.2f);
+public float bounceLerpSpeed = 5f;
+public Vector2 initalScale;
+
+private Vector3 targetScale = Vector3.one;
+
+    void OnCollisionEnter2D(Collision2D collision)
+{
+    float impact = collision.relativeVelocity.magnitude;
+
+    if (impact > 1f) // Only bounce on noticeable hits
+    {
+        float randX = Random.Range(xScaleRange.x, xScaleRange.y);
+        float randY = Random.Range(yScaleRange.x, yScaleRange.y);
+
+        // Apply bounce relative to initialScale
+        targetScale = new Vector3(
+            initalScale.x * randX,
+            initalScale.y * randY,
+            1f
+        );
+    }
+}
+
 
     void Start()
     {
+        targetScale = initalScale;
+
         rb = GetComponent<Rigidbody2D>();
 
         // A bit of drag can help keep the fish from sliding around too much
         // but if you want friction for spinning, you might use a low-friction Physics Material instead.
         rb.angularDamping = 0.2f;
         rb.linearDamping = 0.2f;
+        initalScale = fishModelPrefab.localScale;
     }
 
     void Update()
@@ -51,6 +81,17 @@ public class FloppyFishController : MonoBehaviour
             Debug.Log("Jumping with left/right held");
           
         }
+        // Smoothly return fish model to normal scale
+if (fishModelPrefab != null)
+{
+    fishModelPrefab.localScale = Vector3.Lerp(
+        fishModelPrefab.localScale,
+        targetScale,
+        Time.deltaTime * bounceLerpSpeed
+    );
+}
+
+
     }
 
     void FixedUpdate()
@@ -89,6 +130,11 @@ public class FloppyFishController : MonoBehaviour
 
     private void DoFlop()
     {
+        bool squish = Random.value > 0.5f;
+targetScale = squish
+    ? new Vector3(initalScale.x * 1.2f, initalScale.y * 0.85f, 1f)
+    : new Vector3(initalScale.x * 0.85f, initalScale.y * 1.2f, 1f);
+
         // Base jump is straight up
         Vector2 jumpDir = Vector2.up;
         bool leftHeld = Input.GetKey(KeyCode.A);
