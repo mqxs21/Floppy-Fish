@@ -19,7 +19,7 @@ public class EnemySpike : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            Debug.Log("Player died!");
+           // Debug.Log("Player died!");
         }
     }
 }
