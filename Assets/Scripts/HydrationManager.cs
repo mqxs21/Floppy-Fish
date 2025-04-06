@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class HydrationManager : MonoBehaviour
@@ -14,14 +16,21 @@ public class HydrationManager : MonoBehaviour
     public Color blueStatusColor;
     public Color dryStatusColor;
     private Color targetColor;
+    public ParticleSystem dieParticleEffect;
+    public Transform playerLocation;
+    private bool hasDiedDueToDehydration = false;
+    public TextMeshProUGUI hydrationTextPopup;
+    public 
     void Start()
     {
         currentHydration = maxHydration;
+        playerLocation = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     // Update is called once per frame
     void Update()
 {
+    hydrationTextPopup.gameObject.SetActive(hasDiedDueToDehydration);
     if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
     {
         targetColor = blueStatusColor;
@@ -37,11 +46,11 @@ public class HydrationManager : MonoBehaviour
     // Drain or restore hydration based on environment
     if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
     {
-        currentHydration += 10f * Time.deltaTime; // slowly recharges
+        currentHydration += 10f * Time.deltaTime; 
     }
     else
     {
-        currentHydration -= 15f * Time.deltaTime; // drains faster
+        currentHydration -= 10f * Time.deltaTime; 
     }
     if (muteHydrationBar)
     {
@@ -56,8 +65,25 @@ public class HydrationManager : MonoBehaviour
     if (currentHydration <= 0f)
     {
         Debug.Log("Fish is dried out! Restarting...");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Or show game over UI
+        if (!hasDiedDueToDehydration)
+    {
+        Instantiate(dieParticleEffect, playerLocation.position, Quaternion.identity);
+        StartCoroutine(WaitForDeath());
+        
+        hasDiedDueToDehydration = true;
     }
+        
+         // Or show game over UI
+    }
+}
+IEnumerator WaitForDeath(){
+    yield return new WaitForSecondsRealtime(0.2f);
+    Time.timeScale = 0.3f;
+    yield return new WaitForSecondsRealtime(1f);
+    
+    
+    Time.timeScale = 1f;
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 }
 
 
