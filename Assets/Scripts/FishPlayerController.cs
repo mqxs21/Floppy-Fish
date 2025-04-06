@@ -145,6 +145,10 @@ void RandomTitleMotion()
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Y))
+    {
+        SceneManager.LoadScene(0);
+    }
         if (isTitleFish)
         {
             RandomTitleMotion();
@@ -218,6 +222,7 @@ if (fishModelPrefab != null)
 
    void FixedUpdate()
 {
+    
     CheckGrounded();
 
     // Clamp angular velocity
