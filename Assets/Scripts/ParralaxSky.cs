@@ -11,7 +11,6 @@ public class ParallaxSky : MonoBehaviour
     public float moveThreshold = 0.01f;  // Minimum movement required to update
 
     private float startX;
-    private float lastAppliedOffsetX;
 
     void Start()
     {
@@ -19,7 +18,6 @@ public class ParallaxSky : MonoBehaviour
             cam = Camera.main;
 
         startX = transform.position.x;
-        lastAppliedOffsetX = player.position.x - cam.transform.position.x;
     }
 
     void LateUpdate()

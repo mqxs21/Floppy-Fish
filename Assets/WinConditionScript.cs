@@ -5,10 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class WinConditionScript : MonoBehaviour
 {
+    public GameObject partcielEffectWin;
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            Instantiate(partcielEffectWin, transform.position, Quaternion.identity);
             StartCoroutine(WaitForNextLevel());
         }
     }
