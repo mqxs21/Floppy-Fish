@@ -6,10 +6,12 @@ using UnityEngine.SceneManagement;
 public class WinConditionScript : MonoBehaviour
 {
     public GameObject partcielEffectWin;
+    public AudioSource portalAudio;
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            portalAudio.Play();
             Instantiate(partcielEffectWin, transform.position, Quaternion.identity);
             StartCoroutine(WaitForNextLevel());
         }

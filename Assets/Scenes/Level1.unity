@@ -347,14 +347,6 @@ PrefabInstance:
       propertyPath: camTracker
       value: 
       objectReference: {fileID: 1014950458}
-    - target: {fileID: 5311643527622021086, guid: 27cbcf67a2997407bb3ecf0809c25646, type: 3}
-      propertyPath: xScaleRange.x
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5311643527622021086, guid: 27cbcf67a2997407bb3ecf0809c25646, type: 3}
-      propertyPath: yScaleRange.x
-      value: 0.7
-      objectReference: {fileID: 0}
     - target: {fileID: 6175092068820824775, guid: 27cbcf67a2997407bb3ecf0809c25646, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.100211

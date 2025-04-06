@@ -7,6 +7,11 @@ public class Water : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerStateManager.currentPlayerState = PlayerStateManager.PlayerState.Water;
+            if (!collision.GetComponentInParent<FloppyFishController>().waterSound.isPlaying)
+            {
+                collision.GetComponentInParent<FloppyFishController>().waterSound.Play();
+            }
+            
             Debug.Log("Player is in water");
         }
     }

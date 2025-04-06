@@ -49,6 +49,15 @@ public bool isTitleFish = false;
     Instantiate(sandPartclePrefab, collision.contacts[0].point, Quaternion.identity);
     camTracker.ShakeCamera(0.06f, impact * 0.04f);
 
+    if (impact > 0.3)
+    {
+        float randomPitch = Random.Range(0.6f, 0.9f);
+        hitSandSound.pitch = randomPitch;
+        hitSandSound.volume = impact * 0.1f;
+        hitSandSound.Play();
+    }
+    
+
     if (impact > 1f) // Only bounce on noticeable hits 
     {
         float randX = Random.Range(xScaleRange.x, xScaleRange.y);
@@ -67,6 +76,10 @@ public CameraLocationTracker camTracker;
 
 [Header("Water Movement")]
 public float maxSwimSpeed = 3f;
+
+[Header("Sounds")]
+public AudioSource waterSound;
+public AudioSource hitSandSound;
 
 
     void Start()
