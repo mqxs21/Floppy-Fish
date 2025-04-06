@@ -41,7 +41,7 @@ private Vector3 targetScale = Vector3.one;
     }
     //--------------------------------
     float impact = collision.relativeVelocity.magnitude;
-    camTracker.ShakeCamera(0.06f, impact * 0.08f);
+    camTracker.ShakeCamera(0.06f, impact * 0.04f);
 
     if (impact > 1f) // Only bounce on noticeable hits
     {
