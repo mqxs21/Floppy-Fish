@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class FloppyFishController : MonoBehaviour
@@ -33,6 +34,7 @@ public Vector2 initalScale;
 public GameObject sandPartclePrefab;
 
 private Vector3 targetScale = Vector3.one;
+public bool isTitleFish = false;
 
 
 
@@ -79,9 +81,67 @@ public float maxSwimSpeed = 3f;
         rb.linearDamping = 0.2f;
         initalScale = fishModelPrefab.localScale;
     }
+    private float randomTimer = 0f;
+private float randomCooldown = 1.5f;
+private bool nextRandomMovementIsLeft = false;
+
+
+void RandomTitleMotion()
+{
+    randomTimer += Time.deltaTime;
+
+    if (randomTimer >= randomCooldown)
+    {
+        randomTimer = 0f;
+        randomCooldown = Random.Range(1f, 3f);
+
+        // Pick a random direction
+        Vector2 force = new Vector2(Random.Range(-1f, 1f), Random.Range(0.5f, 1f)).normalized;
+        float impulse = Random.Range(5f, 15f);
+    if (nextRandomMovementIsLeft){
+        rb.AddForce(-force * impulse, ForceMode2D.Impulse);
+        nextRandomMovementIsLeft = false;
+    }else{
+        rb.AddForce(force * impulse, ForceMode2D.Impulse);
+        nextRandomMovementIsLeft = true;
+    }
+        
+
+        // Add a bit of torque for floppiness
+        rb.AddTorque(Random.Range(-20f, 20f), ForceMode2D.Impulse);
+    }
+
+    // Smooth idle spin or wiggle (optional)
+    if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
+    {
+        Vector2 velocity = rb.linearVelocity;
+        if (velocity.sqrMagnitude > 0.1f)
+        {
+            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+            angle -= 90;
+            Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                targetRotation,
+                Time.deltaTime * 5f
+            );
+        }
+    }
+}
+
 
     void Update()
     {
+        if (isTitleFish)
+        {
+            RandomTitleMotion();
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            //Emergency reset
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1 );
+        }
         if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
 {
     Vector2 velocity = rb.linearVelocity;

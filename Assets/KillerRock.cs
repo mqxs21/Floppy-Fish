@@ -11,13 +11,13 @@ public class KillerRock : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Instantiate(partcielEffectDie, transform.position, Quaternion.identity);
-            cameraLocationTracker.ShakeCamera(0.5f,0.1f);
+            cameraLocationTracker.ShakeCamera(1f,0.5f);
             StartCoroutine(WaitToDie());
         }
     }
     IEnumerator WaitToDie(){
         Time.timeScale = 0.3f;
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(1f);
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

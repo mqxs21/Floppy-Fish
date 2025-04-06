@@ -16,6 +16,7 @@ public class WinConditionScript : MonoBehaviour
     }
     IEnumerator WaitForNextLevel()
     {
+        GetComponent<SpriteRenderer>().color = Color.yellow;
         Time.timeScale = 0.3f;
         yield return new WaitForSecondsRealtime(2f);
         Time.timeScale = 1f;
