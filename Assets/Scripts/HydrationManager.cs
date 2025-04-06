@@ -10,6 +10,10 @@ public class HydrationManager : MonoBehaviour
 
     public UnityEngine.UI.Image HydrationBar;
     public bool muteHydrationBar = false;
+    public UnityEngine.UI.Image statusPanel;
+    public Color blueStatusColor;
+    public Color dryStatusColor;
+    private Color targetColor;
     void Start()
     {
         currentHydration = maxHydration;
@@ -18,6 +22,15 @@ public class HydrationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
 {
+    if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
+    {
+        targetColor = blueStatusColor;
+    }
+    else
+    {
+        targetColor = dryStatusColor;
+    }
+    statusPanel.color = Color.Lerp(statusPanel.color, targetColor, Time.deltaTime * 5f);
     // Update the hydration bar UI
     HydrationBar.fillAmount = Mathf.Lerp(HydrationBar.fillAmount, currentHydration / maxHydration, Time.deltaTime * 5f);
 
