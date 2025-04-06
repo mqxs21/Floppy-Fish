@@ -55,6 +55,8 @@ private Vector3 targetScale = Vector3.one;
         );
     }
 }
+[Header("Water Movement")]
+public float maxSwimSpeed = 3f;
 
 
     void Start()
@@ -73,16 +75,35 @@ private Vector3 targetScale = Vector3.one;
     void Update()
     {
         if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
+{
+    Vector2 velocity = rb.linearVelocity;
+
+    // Only rotate if moving fast enough
+    if (velocity.sqrMagnitude > 0.1f)
+    {
+        float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+        angle -= 90;
+        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+        
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            targetRotation,
+            Time.deltaTime * 5f
+        );
+    }
+}
+
+        if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space))
             {
-                rb.AddForce(Vector2.up * 2, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.up * 0.3f, ForceMode2D.Impulse);
             }else if (Input.GetKey(KeyCode.A))
             {
-                rb.AddForce(Vector2.left * 2, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.left * 0.1f, ForceMode2D.Impulse);
             }else if (Input.GetKey(KeyCode.D))
             {
-                rb.AddForce(Vector2.right * 2, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.right * 0.1f, ForceMode2D.Impulse);
             }
         }else{
               if (Input.GetKeyDown(KeyCode.Space) && isGrounded && (Time.time - lastFlopTime >= flopCooldown))
@@ -114,31 +135,38 @@ if (fishModelPrefab != null)
 
     }
 
-    void FixedUpdate()
+   void FixedUpdate()
+{
+    CheckGrounded();
+
+    // Clamp angular velocity
+    rb.angularVelocity = Mathf.Clamp(rb.angularVelocity, -maxAngularSpeed, maxAngularSpeed);
+
+    if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
     {
-        CheckGrounded();
-
-        // 1) Limit how fast we can spin
-        rb.angularVelocity = Mathf.Clamp(rb.angularVelocity, -maxAngularSpeed, maxAngularSpeed);
-
-        // 2) Rotate in place when holding left/right
+        if (rb.linearVelocity.magnitude > maxSwimSpeed)
+        {
+            rb.linearVelocity = rb.linearVelocity.normalized * maxSwimSpeed;
+        }
+    }
+    else
+    {
+        // ROTATION FLOPPY CONTROLS — land mode only
         bool leftHeld = Input.GetKey(KeyCode.A);
         bool rightHeld = Input.GetKey(KeyCode.D);
 
         if (leftHeld)
         {
             float torquePerFrame = (isGrounded ? landTorque : airTorque) * Time.fixedDeltaTime;
-            // Positive torque => rotate counterclockwise
             rb.AddTorque(torquePerFrame, ForceMode2D.Force);
         }
         if (rightHeld)
         {
             float torquePerFrame = (isGrounded ? landTorque : airTorque) * Time.fixedDeltaTime;
-            // Negative torque => rotate clockwise
             rb.AddTorque(-torquePerFrame, ForceMode2D.Force);
         }
 
-        // 3) Clamp horizontal speed so we don’t slide too far
+        // Clamp horizontal velocity (land only)
         if (Mathf.Abs(rb.linearVelocity.x) > maxHorizontalSpeed)
         {
             rb.linearVelocity = new Vector2(
@@ -147,6 +175,9 @@ if (fishModelPrefab != null)
             );
         }
     }
+}
+
+
 
     private void DoFlop()
     {

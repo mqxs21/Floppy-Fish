@@ -152,7 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   minX: -9
-  maxX: 9.75
+  maxX: 13
   minY: -5
   maxY: 5
   smoothTime: 0.15
