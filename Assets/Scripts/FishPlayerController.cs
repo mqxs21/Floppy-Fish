@@ -84,6 +84,8 @@ public AudioSource hitSandSound;
 
     void Start()
     {
+        Time.timeScale = 1f;
+        Application.targetFrameRate = 120;
         targetScale = initalScale;
 
         rb = GetComponent<Rigidbody2D>();
