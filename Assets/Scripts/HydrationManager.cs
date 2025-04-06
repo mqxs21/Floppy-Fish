@@ -46,7 +46,7 @@ public class HydrationManager : MonoBehaviour
     // Drain or restore hydration based on environment
     if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
     {
-        currentHydration += 10f * Time.deltaTime; 
+        currentHydration += 20f * Time.deltaTime; 
     }
     else
     {

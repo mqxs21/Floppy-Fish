@@ -16,8 +16,8 @@ public class KillerRock : MonoBehaviour
         }
     }
     IEnumerator WaitToDie(){
-        Time.timeScale = 0.3f;
-        yield return new WaitForSecondsRealtime(1f);
+        Time.timeScale = 0.9f;
+        yield return new WaitForSecondsRealtime(0.5f);
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
