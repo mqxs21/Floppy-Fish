@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class HydrationManager : MonoBehaviour
@@ -8,6 +9,7 @@ public class HydrationManager : MonoBehaviour
     public static float currentHydration = 100;
 
     public UnityEngine.UI.Image HydrationBar;
+    public bool muteHydrationBar = false;
     void Start()
     {
         currentHydration = maxHydration;
@@ -15,11 +17,36 @@ public class HydrationManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+{
+    // Update the hydration bar UI
+    HydrationBar.fillAmount = Mathf.Lerp(HydrationBar.fillAmount, currentHydration / maxHydration, Time.deltaTime * 5f);
+
+    // Drain or restore hydration based on environment
+    if (PlayerStateManager.currentPlayerState == PlayerStateManager.PlayerState.Water)
     {
-        HydrationBar.fillAmount = Mathf.Lerp(HydrationBar.fillAmount,(currentHydration / maxHydration), Time.deltaTime * 5);
-       // Debug.Log("Hydration: " + HydrationManager.currentHydration);
-        
+        currentHydration += 10f * Time.deltaTime; // slowly recharges
     }
+    else
+    {
+        currentHydration -= 15f * Time.deltaTime; // drains faster
+    }
+    if (muteHydrationBar)
+    {
+        HydrationBar.fillAmount = 1;
+        currentHydration = maxHydration;
+    }
+
+    // Clamp hydration between 0 and max
+    currentHydration = Mathf.Clamp(currentHydration, 0f, maxHydration);
+
+    // Optional: Do something when hydration is empty
+    if (currentHydration <= 0f)
+    {
+        Debug.Log("Fish is dried out! Restarting...");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Or show game over UI
+    }
+}
+
 
 
     public void AddHydration(int amount)
