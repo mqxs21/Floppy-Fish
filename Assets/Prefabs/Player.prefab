@@ -334,7 +334,9 @@ MonoBehaviour:
   xScaleRange: {x: 0.5, y: 1.5}
   yScaleRange: {x: 0.5, y: 1.5}
   bounceLerpSpeed: 7
-  initalScale: {x: 0, y: 0}
+  initalScale: {x: 0.04281578, y: 0.06811053}
+  camTracker: {fileID: 0}
+  maxSwimSpeed: 3
   capsuleWidth: 2
   capsuleHeight: 0.01
 --- !u!50 &6408710630781683102

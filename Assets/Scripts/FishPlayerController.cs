@@ -41,6 +41,7 @@ private Vector3 targetScale = Vector3.one;
     }
     //--------------------------------
     float impact = collision.relativeVelocity.magnitude;
+    camTracker.ShakeCamera(0.06f, impact * 0.08f);
 
     if (impact > 1f) // Only bounce on noticeable hits
     {
@@ -55,6 +56,9 @@ private Vector3 targetScale = Vector3.one;
         );
     }
 }
+[Header("Camera")]
+public CameraLocationTracker camTracker;
+
 [Header("Water Movement")]
 public float maxSwimSpeed = 3f;
 
