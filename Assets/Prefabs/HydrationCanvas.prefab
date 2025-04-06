@@ -276,7 +276,7 @@ MonoBehaviour:
   dryStatusColor: {r: 0.6792453, g: 0.56400996, b: 0.028835872, a: 0.09411765}
   dieParticleEffect: {fileID: 8773747337190128128, guid: e50c4358861184979a6e689215ec99a7, type: 3}
   playerLocation: {fileID: 0}
-  hydrationTextPopup: {fileID: 0}
+  hydrationTextPopup: {fileID: 2373113075834280474}
 --- !u!1 &5139564606062943936
 GameObject:
   m_ObjectHideFlags: 0

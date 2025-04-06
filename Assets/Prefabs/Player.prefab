@@ -335,6 +335,7 @@ MonoBehaviour:
   yScaleRange: {x: 0.5, y: 1.5}
   bounceLerpSpeed: 7
   initalScale: {x: 0.04281578, y: 0.06811053}
+  sandPartclePrefab: {fileID: 5177373199969062378, guid: 507cff195e69243a9ab5ba85b643a0c9, type: 3}
   camTracker: {fileID: 0}
   maxSwimSpeed: 3
   capsuleWidth: 2

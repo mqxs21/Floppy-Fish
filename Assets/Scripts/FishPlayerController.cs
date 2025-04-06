@@ -30,6 +30,7 @@ public Vector2 xScaleRange = new Vector2(0.8f, 1.2f);
 public Vector2 yScaleRange = new Vector2(0.8f, 1.2f);
 public float bounceLerpSpeed = 5f;
 public Vector2 initalScale;
+public GameObject sandPartclePrefab;
 
 private Vector3 targetScale = Vector3.one;
 
@@ -43,9 +44,10 @@ private Vector3 targetScale = Vector3.one;
     }
     //--------------------------------
     float impact = collision.relativeVelocity.magnitude;
+    Instantiate(sandPartclePrefab, collision.contacts[0].point, Quaternion.identity);
     camTracker.ShakeCamera(0.06f, impact * 0.04f);
 
-    if (impact > 1f) // Only bounce on noticeable hits
+    if (impact > 1f) // Only bounce on noticeable hits 
     {
         float randX = Random.Range(xScaleRange.x, xScaleRange.y);
         float randY = Random.Range(yScaleRange.x, yScaleRange.y);
